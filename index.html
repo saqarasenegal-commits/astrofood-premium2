@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AstroFood – Static</title></head>
+<body>
+<h1>AstroFood – Static (sans API)</h1>
+<p>Si cette page s'affiche sur Vercel, c'est bon ✅</p>
+<script>
+async function show(){
+  const meals = await fetch("./data/meals-fr.json").then(r=>r.json()).catch(()=>[]);
+  document.body.insertAdjacentHTML("beforeend","<pre>"+JSON.stringify(meals,null,2)+"</pre>");
+}
+show();
+</script>
+</body>
+</html>
