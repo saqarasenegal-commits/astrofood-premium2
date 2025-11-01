@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AstroFood v19 – Premium Gold + Chef-AI</title>
+
+  <!-- Police arabe -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: #FBBF24;
+      --bg: radial-gradient(circle at top, #0f172a, #020617 65%);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(2,6,23,.22);
+      border-bottom: 1px solid rgba(251,191,36,.25);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .branding {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+    .logo {
+      width: 44px;
+      height: 44px;
+      background: rgba(251,191,36,.08);
+      border: 1px solid rgba(251,191,36,.4);
+      border-radius: .9rem;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: var(--gold);
+      font-size: .8rem;
+    }
+    .langs {
+      display: flex;
+      gap: .5rem;
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #fff;
+      cursor: pointer;
+      padding: .35rem .7rem;
+      border-radius: .5rem;
+      font-size: .85rem;
+    }
+    .lang-btn.active {
+      border-color: rgba(251,191,36,.6);
+      background: rgba(251,191,36,.1);
+      color: var(--gold);
+    }
+    main {
+      width: min(1100px, 100%);
+      margin: 1.5rem auto 4.5rem;
+      padding: 0 1rem 4rem;
+    }
+    .hero {
+      display: grid;
+      gap: 1.2rem;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+    }
+    .hero-title {
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1.05;
+    }
+    .hero-sub {
+      color: rgba(255,255,255,.6);
+      margin-top: .5rem;
+    }
+    .hero-cta {
+      margin-top: 1rem;
+      display: flex;
+      gap: .8rem;
+      flex-wrap: wrap;
+    }
+    .btn-gold {
+      background: #FBBF24;
+      border: none;
+      color: #020617;
+      padding: .6rem 1.1rem;
+      border-radius: .55rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    .qr-block {
+      background: rgba(2,6,23,.4);
+      border: 1px solid rgba(251,191,36,.2);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    .qr {
+      width: 125px;
+      height: 125px;
+      background: #fff;
+      margin: .5rem auto;
+      border-radius: .75rem;
+      overflow: hidden;
+    }
+    .qr-legend {
+      font-size: .7rem;
+      color: var(--gold);
+      margin-top: .4rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      font-family: 'Cairo',sans-serif;
+    }
+    /* Bloc AI principal */
+    #astrofood-ai {
+      background: rgba(15,23,42,.35);
+      border:1px solid rgba(251,191,36,.35);
+      border-radius:1rem;
+      padding:1.5rem;
+      margin-top:2rem;
+    }
+    select, input {
+      background:#020617;
+      color:#fff;
+      padding:.5rem 1rem;
+      border:1px solid rgba(251,191,36,.4);
+      border-radius:.5rem;
+    }
+    /* carte rapide */
+    #recipe-card-content {
+      background: rgba(15,23,42,.35);
+      border:1px solid rgba(251,191,36,.25);
+      border-radius:1rem;
+      padding:1.2rem 1.1rem;
+      margin-top: 1rem;
+    }
+    /* carte éducative détaillée */
+    #recipe-edu-display {
+      display: none;
+      margin-top: 1.4rem;
+      gap: 1rem;
+    }
+    .card {
+      background: rgba(15,23,42,.35);
+      border: 1px solid rgba(251,191,36,.18);
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+    /* chatbot flottant */
+    .ai-bubble {
+      position: fixed;
+      right: 1.2rem;
+      bottom: 1.2rem;
+      background: rgba(2,6,23,.7);
+      border: 1px solid rgba(251,191,36,.45);
+      border-radius: 1.2rem;
+      width: 320px;
+      max-height: 410px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+      font-size: .85rem;
+    }
+    .ai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: .65rem .9rem;
+      background: rgba(251,191,36,.08);
+    }
+    .ai-messages {
+      padding: .75rem;
+      gap: .5rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .ai-msg {
+      background: rgba(15,23,42,.35);
+      border:1px solid rgba(251,191,36,.12);
+      border-radius: .7rem;
+      padding: .5rem .7rem;
+    }
+    .ai-input {
+      display: flex;
+      gap: .4rem;
+      padding: .6rem;
+      border-top: 1px solid rgba(251,191,36,.1);
+      background: rgba(2,6,23,.4);
+    }
+    .ai-input input {
+      flex: 1;
+    }
+    .hidden { display: none; }
+
+    @media (max-width: 880px) {
+      .hero { grid-template-columns: 1fr; }
+      .ai-bubble { width: min(96vw, 340px); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="branding">
+    <div class="logo">AF</div>
+    <div>
+      <div style="font-weight:600;">AstroFood Premium Gold</div>
+      <div style="font-size:.7rem; color:rgba(255,255,255,.6);">Votre recette selon les étoiles</div>
+    </div>
+  </div>
+  <div class="langs">
+    <button class="lang-btn active" data-lang="french">FR</button>
+    <button class="lang-btn" data-lang="english">EN</button>
+    <button class="lang-btn" data-lang="arabic">العربية</button>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <h1 class="hero-title" data-i18n-fr="Cuisine guidée par les astres"
+                           data-i18n-en="Cooking guided by the stars"
+                           data-i18n-ar="طعامك وفق حركة الكواكب">Cuisine guidée par les astres</h1>
+      <p class="hero-sub" data-i18n-fr="Choisis ton signe, ton état. L’AI te propose 3 repas favorables + boissons + carte éducative."
+                         data-i18n-en="Pick your sign and state. AI suggests 3 meals + drinks + educational card."
+                         data-i18n-ar="اختر برجك وحالتك، والذكاء الاصطناعي يقترح 3 وجبات + مشروبات + بطاقة تعليمية.">
+        Choisis ton signe, ton état. L’AI te propose 3 repas favorables + boissons + carte éducative.
+      </p>
+      <div class="hero-cta">
+        <a class="btn-gold" href="https://astrofoody.lemonsqueezy.com" target="_blank" rel="noopener">
+          🛒 Unlock full pack
+        </a>
+        <button class="btn-gold" style="background:transparent;border:1px solid rgba(251,191,36,.3);color:#fff;" onclick="openChat()">Parler au Chef-AI</button>
+      </div>
+    </div>
+    <div class="qr-block">
+      <div class="qr">
+        <!-- QR FIXE EXCEPTION -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=125x125&data=https://astrofoody.lemonsqueezy.com"
+             alt="QR AstroFood" width="125" height="125" style="border-radius:.5rem;" />
+      </div>
+      <div class="qr-legend">SCANNEZ POUR LA CARTE ASTROFOOD</div>
+      <p style="font-size:.7rem; margin-top:.8rem;">Version Premium Gold v19 – ne pas modifier la position du QR & de la légende.</p>
+    </div>
+  </section>
+
+  <!-- SECTION AI PRINCIPALE -->
+  <section id="astrofood-ai">
+    <h2 style="color:#FBBF24; margin-bottom:1rem;" data-i18n-fr="Assistant Chef-AI AstroFood"
+                                                   data-i18n-en="AstroFood Chef-AI Assistant"
+                                                   data-i18n-ar="مساعد الشيف الفلكي أستروفود">
+      Assistant Chef-AI AstroFood
+    </h2>
+    <p style="margin-bottom:1rem;" data-i18n-fr="Je détecte ton signe, ton énergie, et je te donne 3 repas (petit-déj, déjeuner, dîner) + 2 boissons universelles + carte éducative à afficher."
+                                    data-i18n-en="I detect your sign and energy and give 3 meals (breakfast, lunch, dinner) + 2 universal drinks + educational card."
+                                    data-i18n-ar="أتعرف على برجك وحالتك وأعطيك 3 وجبات (فطور، غداء، عشاء) + مشروبين عالميين + بطاقة تعليمية.">
+      Je détecte ton signe, ton énergie, et je te donne 3 repas (petit-déj, déjeuner, dîner) + 2 boissons universelles + carte éducative à afficher.
+    </p>
+
+    <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+      <div style="flex:1 1 240px;">
+        <label style="display:block; margin-bottom:.5rem;" data-i18n-fr="Ton signe"
+                                                           data-i18n-en="Your sign"
+                                                           data-i18n-ar="برجك">Ton signe</label>
+        <select id="zodiac-select">
+          <option value="aries">♈ Bélier</option>
+          <option value="taurus">♉ Taureau</option>
+          <option value="gemini">♊ Gémeaux</option>
+          <option value="cancer">♋ Cancer</option>
+          <option value="leo">♌ Lion</option>
+          <option value="virgo">♍ Vierge</option>
+          <option value="libra">♎ Balance</option>
+          <option value="scorpio">♏ Scorpion</option>
+          <option value="sagittarius">♐ Sagittaire</option>
+          <option value="capricorn">♑ Capricorne</option>
+          <option value="aquarius">♒ Verseau</option>
+          <option value="pisces">♓ Poissons</option>
+        </select>
+      </div>
+      <div style="flex:1 1 240px;">
+        <label style="display:block; margin-bottom:.5rem;" data-i18n-fr="État / période"
+                                                           data-i18n-en="State / period"
+                                                           data-i18n-ar="الحالة / الفترة">État / période</label>
+        <select id="energy-select">
+          <option value="equilibre">Équilibre / mois actuel</option>
+          <option value="fatigue">Fatigue physique</option>
+          <option value="moral_bas">Moral bas / stress</option>
+        </select>
+      </div>
+      <div style="display:flex; align-items:flex-end;">
+        <button onclick="genRecettes()" class="btn-gold" type="button">
+          Générer mes 3 repas
+        </button>
+      </div>
+    </div>
+
+    <!-- affichage rapide -->
+    <div id="recipe-card-content">
+      <p style="color:rgba(255,255,255,.6);">
+        🍽️ Choisis ton signe et ton état pour afficher ta recette personnalisée.<br>
+        Par défaut : <strong>Taureau – équilibre</strong>.
+      </p>
+    </div>
+
+    <!-- affichage carte EDU complète -->
+    <div id="recipe-edu-display"></div>
+  </section>
+
+  <!-- SECTION : description -->
+  <section style="margin-top:2.5rem;">
+    <h2 style="color:#fff; margin-bottom:.75rem;" data-i18n-fr="Comment ça marche ?"
+                                                  data-i18n-en="How it works"
+                                                  data-i18n-ar="كيف يعمل؟">Comment ça marche ?</h2>
+    <p style="color:rgba(255,255,255,.6);" data-i18n-fr="Nous combinons le signe solaire, l’état énergétique (fatigue, stress, digestion) et un set de recettes afro/arabes/européennes équilibrées. L’AI peut proposer des boissons (bissap, bouye, gingembre)."
+                                           data-i18n-en="We combine sun sign, energy state (fatigue, stress, digestion) and a set of balanced Afro/Arab/European recipes. AI can suggest drinks (bissap, bouye, ginger)."
+                                           data-i18n-ar="نحن نمزج بين البرج الشمسي، والحالة الطاقية (تعب، ضغط، هضم)، ومجموعة وصفات متوازنة أفريقية/عربية/أوروبية. ويمكن للذكاء الاصطناعي اقتراح مشروبات (الكركديه، الباوباب، الزنجبيل).">
+      Nous combinons le signe solaire, l’état énergétique (fatigue, stress, digestion) et un set de recettes afro/arabes/européennes équilibrées. L’AI peut proposer des boissons (bissap, bouye, gingembre).
+    </p>
+  </section>
+</main>
+
+<!-- CHATBOT FLOTTANT -->
+<div class="ai-bubble" id="chatbot">
+  <div class="ai-header">
+    <div>
+      <strong>Chef-AI AstroFood</strong>
+      <div style="font-size:.65rem; color:rgba(255,255,255,.55);">AI active par défaut</div>
+    </div>
+    <button onclick="closeChat()" style="background:none;border:none;color:#fff;cursor:pointer;">✕</button>
+  </div>
+  <div class="ai-messages" id="chat-messages">
+    <div class="ai-msg">
+      👋 Salut ! Dis-moi “Bélier fatigue” ou “Poissons stress” et je te donne 3 repas + 2 boissons + lien.
+    </div>
+  </div>
+  <div class="ai-input">
+    <input type="text" id="chat-input" placeholder="Ex: Bélier fatigue..." onkeydown="if(event.key==='Enter'){sendMsg();}">
+    <button class="btn-gold" style="padding:.4rem .7rem;" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<!-- SCRIPT GLOBAL -->
+<script>
+/* 1. Utilitaire : normaliser la langue */
+function normalizeLang(lang) {
+  if (!lang) return "french";
+  if (lang === "fr" || lang === "french") return "french";
+  if (lang === "en" || lang === "english") return "english";
+  if (lang === "ar" || lang === "arabic") return "arabic";
+  return "french";
+}
+function getLangKey(l) {
+  const n = normalizeLang(l);
+  if (n === "english") return "en";
+  if (n === "arabic") return "ar";
+  return "fr";
+}
+
+/* 2. BASE DE DONNÉES COURTE (affichage rapide) */
+const ASTRO_DB = {
+  /* je mets que 3 états : equilibre / fatigue / moral_bas
+     mais pour les 12 signes */
+  "aries": {
+    "equilibre": {
+      fr: { title: "Bélier – énergie maîtrisée", prevention:"Bois de l’eau, plats tièdes.", petit_dej:"Bouillie de mil coco-dattes", dejeuner:"Yassa poulet citronné + riz complet", diner:"Poisson vapeur et légumes racines" },
+      en: { title: "Aries – balanced fire", prevention:"Drink water, eat warm light food.", petit_dej:"Millet porridge with coconut & dates", dejeuner:"Light chicken yassa + brown rice", diner:"Steamed fish with roots" },
+      ar: { title: "الحمل – طاقة متوازنة", prevention:"اشرب ماء وتناول طعامًا دافئًا.", petit_dej:"عصيدة دخن بحليب جوز الهند والتمر", dejeuner:"ياسا دجاج خفيف + أرز كامل", diner:"سمك مطهوّ على البخار بخضار" }
+    },
+    "fatigue": {
+      fr: { title:"Bélier – Mars affaibli", prevention:"Évite sucre raffiné.", petit_dej:"Smoothie banane-gingembre-avoine", dejeuner:"Thiakry protéiné aux fruits secs", diner:"Soupe de lentilles et carottes" },
+      en: { title:"Aries – low Mars", prevention:"Avoid sugar.", petit_dej:"Banana ginger oat smoothie", dejeuner:"Protein thiakry", diner:"Lentil-carrot soup" },
+      ar: { title:"الحمل – تعب", prevention:"تجنب السكر.", petit_dej:"سموثي موز وزنجبيل وشوفان", dejeuner:"ثياكري غني", diner:"شوربة عدس وجزر" }
+    },
+    "moral_bas": {
+      fr: { title:"Bélier – Moral en baisse", prevention:"Lumière du soleil.", petit_dej:"Pain complet + miel + tisane", dejeuner:"Poulet grillé + salade quinoa", diner:"Riz au lait de coco" },
+      en: { title:"Aries – low mood", prevention:"Get sun.", petit_dej:"Whole bread + honey", dejeuner:"Grilled chicken + quinoa", diner:"Coconut rice pudding" },
+      ar: { title:"الحمل – مزاج منخفض", prevention:"تعرّض للشمس.", petit_dej:"خبز كامل بالعسل", dejeuner:"دجاج مشوي + كينوا", diner:"أرز بحليب جوز الهند" }
+    }
+  },
+  "taurus": {
+    "equilibre": {
+      fr:{title:"Taureau – Vénus en harmonie",prevention:"Évite plats lourds le soir.",petit_dej:"Thiakry léger au lait caillé",dejeuner:"Mafé léger à la viande",diner:"Poisson au four + patate douce"},
+      en:{title:"Taurus – Venus in harmony",prevention:"Avoid heavy meals at night.",petit_dej:"Light thiakry",dejeuner:"Light peanut stew",diner:"Baked fish + sweet potato"},
+      ar:{title:"الثور – الزهرة منسجمة",prevention:"تجنب الأكل الدسم ليلاً.",petit_dej:"ثياكري خفيف",dejeuner:"مافي خفيف",diner:"سمك بالفرن مع بطاطا حلوة"}
+    },
+    "fatigue": {
+      fr:{title:"Taureau – digestion lente",prevention:"Citron + gingembre.",petit_dej:"Jus citron chaud au miel",dejeuner:"Riz aux légumes verts + poisson",diner:"Soupe de courgette et menthe"},
+      en:{title:"Taurus – slow digestion",prevention:"Add lemon-ginger",petit_dej:"Warm lemon-honey drink",dejeuner:"Green-veg rice + fish",diner:"Zucchini-mint soup"},
+      ar:{title:"الثور – هضم بطيء",prevention:"أضف الليمون والزنجبيل",petit_dej:"ليمون دافئ بالعسل",dejeuner:"أرز بالخضار وسمك",diner:"شوربة كوسة ونعناع"}
+    },
+    "moral_bas": {
+      fr:{title:"Taureau – besoin de douceur",prevention:"Cuisine avec musique.",petit_dej:"Pain grillé + beurre de cacahuète",dejeuner:"Pâtes pesto et parmesan",diner:"Soupe crémeuse de patate douce"},
+      en:{title:"Taurus – need for comfort",prevention:"Cook slowly.",petit_dej:"Toast + peanut butter",dejeuner:"Pasta with pesto",diner:"Creamy sweet potato soup"},
+      ar:{title:"الثور – بحاجة للراحة",prevention:"اطبخ بهدوء.",petit_dej:"توست بزبدة الفول السوداني",dejeuner:"باستا بالبيستو",diner:"شوربة بطاطا حلوة"}
+    }
+  },
+  "gemini": {
+    "equilibre": {
+      fr:{title:"Gémeaux – Mercure vif",prevention:"Évite grignotage.",petit_dej:"Crêpes légères miel-citron",dejeuner:"Poêlée de légumes + poulet",diner:"Soupe vermicelle au poulet"},
+      en:{title:"Gemini – agile mind",prevention:"Avoid snacking.",petit_dej:"Honey-lemon pancakes",dejeuner:"Veggie stir-fry + chicken",diner:"Chicken vermicelli soup"},
+      ar:{title:"الجوزاء – عقل نشط",prevention:"تجنب الأكل المتقطع.",petit_dej:"فطائر بالعسل والليمون",dejeuner:"خضار مع دجاج",diner:"شوربة شعرية بالدجاج"}
+    },
+    "fatigue": {
+      fr:{title:"Gémeaux – trop d’infos",prevention:"Tisane menthe.",petit_dej:"Yaourt grec + granola",dejeuner:"Riz basmati + poisson vapeur",diner:"Soupe de lentilles corail"},
+      en:{title:"Gemini – info overload",prevention:"Mint tea.",petit_dej:"Greek yogurt + granola",dejeuner:"Basmati rice + steamed fish",diner:"Red lentil soup"},
+      ar:{title:"الجوزاء – إفراط معلومات",prevention:"اشرب نعناع.",petit_dej:"زبادي يوناني",dejeuner:"أرز بسمتي وسمك",diner:"شوربة عدس"}
+    },
+    "moral_bas": {
+      fr:{title:"Gémeaux – nervosité",prevention:"Repas chaud.",petit_dej:"Pain complet + omelette",dejeuner:"Tajine de pois chiches",diner:"Riz au lait et cannelle"},
+      en:{title:"Gemini – nervous",prevention:"Warm food.",petit_dej:"Whole bread + omelet",dejeuner:"Chickpea tajine",diner:"Rice pudding with cinnamon"},
+      ar:{title:"الجوزاء – توتر",prevention:"طعام دافئ.",petit_dej:"خبز كامل + عجة",dejeuner:"طاجين حمص",diner:"أرز بالحليب"}
+    }
+  },
+  "cancer": {
+    "equilibre": {
+      fr:{title:"Cancer – protection de la Lune",prevention:"Mange chaud.",petit_dej:"Bouillie de riz au lait",dejeuner:"Poisson sauce oignons + riz",diner:"Soupe douce de légumes"},
+      en:{title:"Cancer – moon protection",prevention:"Eat warm.",petit_dej:"Rice porridge with milk",dejeuner:"Fish in onion sauce + rice",diner:"Soft vegetable soup"},
+      ar:{title:"السرطان – حماية القمر",prevention:"تناول طعاماً دافئاً.",petit_dej:"عصيدة أرز بالحليب",dejeuner:"سمك بصلصة بصل وأرز",diner:"شوربة خضار"}
+    },
+    "fatigue": {
+      fr:{title:"Cancer – sensibilité digestive",prevention:"Fractionne + gingembre.",petit_dej:"Tisane gingembre-miel",dejeuner:"Riz blanc + carottes et poisson",diner:"Soupe de poulet"},
+      en:{title:"Cancer – sensitive digestion",prevention:"Small meals.",petit_dej:"Ginger-honey tea",dejeuner:"White rice + carrots and fish",diner:"Chicken soup"},
+      ar:{title:"السرطان – هضم حساس",prevention:"قسّم الوجبات.",petit_dej:"شاي زنجبيل بالعسل",dejeuner:"أرز وجزر وسمك",diner:"شوربة دجاج"}
+    },
+    "moral_bas": {
+      fr:{title:"Cancer – émotions lourdes",prevention:"Mange simple.",petit_dej:"Pain complet + confiture",dejeuner:"Légumes mijotés + semoule",diner:"Crème de maïs"},
+      en:{title:"Cancer – heavy emotions",prevention:"Simple meals.",petit_dej:"Whole bread + jam",dejeuner:"Stewed vegetables + semolina",diner:"Corn cream soup"},
+      ar:{title:"السرطان – مشاعر ثقيلة",prevention:"طعام بسيط.",petit_dej:"خبز كامل مع مربى",dejeuner:"خضار مطهية مع سميد",diner:"شوربة ذرة"}
+    }
+  },
+  "leo": {
+    "equilibre": {
+      fr:{title:"Lion – vitalité solaire",prevention:"Hydrate-toi.",petit_dej:"Salade de fruits tropicaux au miel",dejeuner:"Poulet rôti citron-thym + couscous",diner:"Soupe froide carotte-orange"},
+      en:{title:"Leo – solar vitality",prevention:"Hydrate.",petit_dej:"Tropical fruit salad",dejeuner:"Roasted chicken + couscous",diner:"Cold carrot-orange soup"},
+      ar:{title:"الأسد – حيوية شمسية",prevention:"اشرب ماء.",petit_dej:"سلطة فواكه استوائية",dejeuner:"دجاج مشوي بالليمون + كسكس",diner:"شوربة جزر وبرتقال باردة"}
+    },
+    "fatigue": {
+      fr:{title:"Lion – perte d’éclat",prevention:"Agrumes + curcuma.",petit_dej:"Jus d’orange + pain complet",dejeuner:"Ragoût de lentilles au curcuma",diner:"Riz sauté crevettes-citron"},
+      en:{title:"Leo – low radiance",prevention:"Citrus & turmeric.",petit_dej:"Orange juice + bread",dejeuner:"Lentil stew",diner:"Shrimp fried rice"},
+      ar:{title:"الأسد – لمعان منخفض",prevention:"حمضيات وكركم.",petit_dej:"عصير برتقال",dejeuner:"يخنة عدس",diner:"أرز بالقريدس"}
+    },
+    "moral_bas": {
+      fr:{title:"Lion – manque de confiance",prevention:"Mets des couleurs.",petit_dej:"Omelette tomate-oignon",dejeuner:"Tajine de légumes racines",diner:"Curry doux de pois chiches"},
+      en:{title:"Leo – low confidence",prevention:"Colorful food.",petit_dej:"Tomato-onion omelet",dejeuner:"Root veggie tagine",diner:"Mild chickpea curry"},
+      ar:{title:"الأسد – ضعف الثقة",prevention:"طعام ملوّن.",petit_dej:"عجة بالبصل",dejeuner:"طاجين خضار",diner:"كاري حمص خفيف"}
+    }
+  },
+  "virgo": {
+    "equilibre": {
+      fr:{title:"Vierge – esprit clair",prevention:"Léger le matin.",petit_dej:"Smoothie avoine-banane-menthe",dejeuner:"Salade quinoa pois chiches",diner:"Soupe carotte-cumin"},
+      en:{title:"Virgo – clear mind",prevention:"Light breakfast.",petit_dej:"Oat-banana-mint smoothie",dejeuner:"Quinoa bowl",diner:"Carrot-cumin soup"},
+      ar:{title:"العذراء – ذهن صافٍ",prevention:"فطور خفيف.",petit_dej:"سموثي شوفان وموز",dejeuner:"كينوا مع حمص",diner:"شوربة جزر وكمون"}
+    },
+    "fatigue": {
+      fr:{title:"Vierge – esprit dispersé",prevention:"Fer + magnésium.",petit_dej:"Pain complet + purée d’amande",dejeuner:"Bowl riz complet, lentilles, avocat",diner:"Soupe miso et tofu"},
+      en:{title:"Virgo – scattered mind",prevention:"Add iron.",petit_dej:"Whole bread + almond",dejeuner:"Brown rice bowl",diner:"Miso soup"},
+      ar:{title:"العذراء – تشتت ذهني",prevention:"أضف الحديد.",petit_dej:"خبز كامل + زبدة لوز",dejeuner:"أرز بني مع عدس",diner:"شوربة ميزو"}
+    },
+    "moral_bas": {
+      fr:{title:"Vierge – trop d’analyse",prevention:"Tisane bouye/menthe.",petit_dej:"Pain de seigle + confiture",dejeuner:"Soupe potiron et pois cassés",diner:"Riz complet aux légumes"},
+      en:{title:"Virgo – overthinking",prevention:"Baobab/mint tea.",petit_dej:"Rye bread + jam",dejeuner:"Pumpkin & split-pea soup",diner:"Brown rice + veggies"},
+      ar:{title:"العذراء – تفكير زائد",prevention:"شراب باوباب.",petit_dej:"خبز جاودار + مربى",dejeuner:"شوربة قرع",diner:"أرز بني بخضار"}
+    }
+  },
+  "libra": {
+    "equilibre": {
+      fr:{title:"Balance – harmonie intérieure",prevention:"Évite transformés.",petit_dej:"Yaourt grec + miel",dejeuner:"Pâtes complètes aux légumes grillés",diner:"Soupe potimarron-gingembre"},
+      en:{title:"Libra – inner balance",prevention:"Avoid processed.",petit_dej:"Greek yogurt + honey",dejeuner:"Whole pasta + grilled veggies",diner:"Pumpkin-ginger soup"},
+      ar:{title:"الميزان – توازن داخلي",prevention:"تجنب المصنع.",petit_dej:"زبادي يوناني بالعسل",dejeuner:"معكرونة قمح كامل",diner:"شوربة قرع وزنجبيل"}
+    },
+    "fatigue": {
+      fr:{title:"Balance – fatigue mentale",prevention:"Infusions légères.",petit_dej:"Tisane verveine + biscotte",dejeuner:"Salade avocat-riz-lentilles",diner:"Soupe pois cassés"},
+      en:{title:"Libra – mental fatigue",prevention:"Herbal teas.",petit_dej:"Verbena tea",dejeuner:"Avocado-rice-lentil salad",diner:"Split pea soup"},
+      ar:{title:"الميزان – تعب ذهني",prevention:"شاي أعشاب.",petit_dej:"شاي لويزة",dejeuner:"سلطة أفوكادو وعدس",diner:"شوربة بازلاء"}
+    },
+    "moral_bas": {
+      fr:{title:"Balance – humeur changeante",prevention:"Jus verts.",petit_dej:"Jus pomme-menthe",dejeuner:"Riz pilaf aux légumes",diner:"Couscous végétarien"},
+      en:{title:"Libra – shifting mood",prevention:"Green food.",petit_dej:"Apple-mint juice",dejeuner:"Veg pilaf rice",diner:"Vegetarian couscous"},
+      ar:{title:"الميزان – مزاج متقلب",prevention:"عصائر خضراء.",petit_dej:"عصير تفاح ونعناع",dejeuner:"أرز بالخضار",diner:"كسكس نباتي"}
+    }
+  },
+  "scorpio": {
+    "equilibre": {
+      fr:{title:"Scorpion – force émotionnelle",prevention:"Protéines maigres.",petit_dej:"Œufs brouillés + avocat",dejeuner:"Ragoût de bœuf aux légumes",diner:"Soupe de légumes racines"},
+      en:{title:"Scorpio – emotional strength",prevention:"Lean protein.",petit_dej:"Scrambled eggs + avocado",dejeuner:"Beef stew",diner:"Root vegetable soup"},
+      ar:{title:"العقرب – قوة عاطفية",prevention:"بروتينات خفيفة.",petit_dej:"بيض مخفوق + أفوكادو",dejeuner:"يخنة لحم بخضار",diner:"شوربة جذور"}
+    },
+    "fatigue": {
+      fr:{title:"Scorpion – tension intérieure",prevention:"Pas de viande rouge le soir.",petit_dej:"Tisane cannelle-gingembre",dejeuner:"Riz aux légumes et poulet",diner:"Soupe patate douce"},
+      en:{title:"Scorpio – inner tension",prevention:"No red meat at night.",petit_dej:"Cinnamon-ginger tea",dejeuner:"Veg rice + chicken",diner:"Sweet potato soup"},
+      ar:{title:"العقرب – توتر داخلي",prevention:"تجنب اللحم ليلاً.",petit_dej:"شاي قرفة وزنجبيل",dejeuner:"أرز بالخضار ودجاج",diner:"شوربة بطاطا حلوة"}
+    },
+    "moral_bas": {
+      fr:{title:"Scorpion – besoin de purification",prevention:"Journée détox.",petit_dej:"Eau chaude citronnée",dejeuner:"Légumes vapeur + poisson",diner:"Soupe claire de légumes"},
+      en:{title:"Scorpio – need for cleansing",prevention:"Detox day.",petit_dej:"Warm lemon water",dejeuner:"Steamed veggies + fish",diner:"Clear veg soup"},
+      ar:{title:"العقرب – حاجة للتنقية",prevention:"ديتوكس.",petit_dej:"ماء دافئ بالليمون",dejeuner:"خضار بالبخار مع سمك",diner:"شوربة خفيفة"}
+    }
+  },
+  "sagittarius": {
+    "equilibre": {
+      fr:{title:"Sagittaire – expansion joyeuse",prevention:"Modère sel/sauces.",petit_dej:"Porridge aux fruits secs",dejeuner:"Poulet grillé + légumes vapeur",diner:"Soupe riz/pois cassés"},
+      en:{title:"Sagittarius – joyful expansion",prevention:"Limit salt.",petit_dej:"Dried-fruit porridge",dejeuner:"Grilled chicken + vegetables",diner:"Rice & pea soup"},
+      ar:{title:"القوس – توسّع مبهج",prevention:"قلل الملح.",petit_dej:"عصيدة فواكه مجففة",dejeuner:"دجاج مشوي + خضار",diner:"شوربة أرز وبازلاء"}
+    },
+    "fatigue": {
+      fr:{title:"Sagittaire – manque d’élan",prevention:"Repas fréquents.",petit_dej:"Smoothie banane-avoine-miel",dejeuner:"Poisson au four + riz complet",diner:"Soupe de courge au gingembre"},
+      en:{title:"Sagittarius – low drive",prevention:"Small meals.",petit_dej:"Banana-oat-honey smoothie",dejeuner:"Baked fish + brown rice",diner:"Pumpkin-ginger soup"},
+      ar:{title:"القوس – فقدان الحماس",prevention:"وجبات صغيرة.",petit_dej:"سموثي موز وشوفان",dejeuner:"سمك بالفرن + أرز",diner:"شوربة قرع وزنجبيل"}
+    },
+    "moral_bas": {
+      fr:{title:"Sagittaire – esprit dispersé",prevention:"Bois bissap.",petit_dej:"Pain complet + confiture",dejeuner:"Riz jollof végétarien",diner:"Soupe lentilles-coriandre"},
+      en:{title:"Sagittarius – scattered mind",prevention:"Drink hibiscus.",petit_dej:"Whole bread + jam",dejeuner:"Veg jollof rice",diner:"Lentil-coriander soup"},
+      ar:{title:"القوس – تشتت ذهن",prevention:"اشرب كركديه.",petit_dej:"خبز كامل + مربى",dejeuner:"أرز جولوف نباتي",diner:"شوربة عدس وكزبرة"}
+    }
+  },
+  "capricorn": {
+    "equilibre": {
+      fr:{title:"Capricorne – stabilité saturnienne",prevention:"Repas à heures fixes.",petit_dej:"Bouillie d’avoine au miel",dejeuner:"Riz brun + légumes sautés",diner:"Soupe de légumes verts"},
+      en:{title:"Capricorn – stability",prevention:"Fixed meal times.",petit_dej:"Honey oatmeal",dejeuner:"Brown rice + veggies",diner:"Green-veg soup"},
+      ar:{title:"الجدي – استقرار",prevention:"وجبات منتظمة.",petit_dej:"شوفان بالعسل",dejeuner:"أرز بني مع خضار",diner:"شوربة خضار خضراء"}
+    },
+    "fatigue": {
+      fr:{title:"Capricorne – surmenage",prevention:"Dors tôt.",petit_dej:"Thé menthe + tartine complète",dejeuner:"Soupe miso + tofu",diner:"Bouillie de riz et légumes"},
+      en:{title:"Capricorn – overwork",prevention:"Sleep early.",petit_dej:"Mint tea + whole toast",dejeuner:"Miso soup + tofu",diner:"Rice-veggie porridge"},
+      ar:{title:"الجدي – إرهاق",prevention:"نم مبكراً.",petit_dej:"شاي نعناع + خبز كامل",dejeuner:"شوربة ميزو",diner:"عصيدة أرز وخضار"}
+    },
+    "moral_bas": {
+      fr:{title:"Capricorne – doute intérieur",prevention:"Tisane relaxante.",petit_dej:"Tisane camomille + biscuit avoine",dejeuner:"Pâtes légères + légumes grillés",diner:"Soupe carotte-curry"},
+      en:{title:"Capricorn – inner doubt",prevention:"Relaxing tea.",petit_dej:"Chamomile tea + oat biscuit",dejeuner:"Light pasta + grilled veggies",diner:"Carrot-curry soup"},
+      ar:{title:"الجدي – شك داخلي",prevention:"شاي مهدئ.",petit_dej:"بابونج + بسكويت شوفان",dejeuner:"باستا خفيفة",diner:"شوربة جزر وكاري"}
+    }
+  },
+  "aquarius": {
+    "equilibre": {
+      fr:{title:"Verseau – inspiration fluide",prevention:"Mange varié.",petit_dej:"Smoothie kiwi-pomme-menthe",dejeuner:"Poisson vapeur + couscous légumes",diner:"Soupe froide de concombre"},
+      en:{title:"Aquarius – flowing inspiration",prevention:"Eat colorful.",petit_dej:"Kiwi-apple-mint smoothie",dejeuner:"Steamed fish + veg couscous",diner:"Cold cucumber soup"},
+      ar:{title:"الدلو – إلهام متدفق",prevention:"طعام متنوّع.",petit_dej:"سموثي كيوي وتفاح",dejeuner:"سمك بالبخار + كسكس",diner:"شوربة خيار باردة"}
+    },
+    "fatigue": {
+      fr:{title:"Verseau – baisse d’énergie",prevention:"Pas d’industriel.",petit_dej:"Jus bouye + pain complet",dejeuner:"Salade lentilles et légumes grillés",diner:"Soupe pois chiches et coriandre"},
+      en:{title:"Aquarius – low energy",prevention:"No processed.",petit_dej:"Baobab juice + bread",dejeuner:"Lentil & grilled veg salad",diner:"Chickpea-coriander soup"},
+      ar:{title:"الدلو – طاقة منخفضة",prevention:"تجنب المصنّع.",petit_dej:"عصير باوباب + خبز",dejeuner:"سلطة عدس وخضار",diner:"شوربة حمص وكزبرة"}
+    },
+    "moral_bas": {
+      fr:{title:"Verseau – incompréhension",prevention:"Reste connecté.",petit_dej:"Pain + confiture d’agrumes",dejeuner:"Légumes sautés au gingembre",diner:"Soupe miso"},
+      en:{title:"Aquarius – misunderstanding",prevention:"Stay social.",petit_dej:"Bread + citrus jam",dejeuner:"Ginger-sautéed veggies",diner:"Miso soup"},
+      ar:{title:"الدلو – شعور بعدم الفهم",prevention:"ابق اجتماعياً.",petit_dej:"خبز مع مربى",dejeuner:"خضار مع زنجبيل",diner:"شوربة ميزو"}
+    }
+  },
+  "pisces": {
+    "equilibre": {
+      fr:{title:"Poissons – émotions fluides",prevention:"Dors bien.",petit_dej:"Porridge riz-coco-miel",dejeuner:"Poisson grillé + légumes verts",diner:"Soupe douce de patate douce"},
+      en:{title:"Pisces – flowing emotions",prevention:"Sleep well.",petit_dej:"Rice-coconut-honey porridge",dejeuner:"Grilled fish + green veggies",diner:"Sweet potato soup"},
+      ar:{title:"الحوت – مشاعر منسابة",prevention:"نَم جيداً.",petit_dej:"عصيدة أرز وجوز الهند",dejeuner:"سمك مشوي + خضار",diner:"شوربة بطاطا حلوة"}
+    },
+    "fatigue": {
+      fr:{title:"Poissons – fatigue émotionnelle",prevention:"Tisane gingembre.",petit_dej:"Tisane gingembre-citron",dejeuner:"Riz aux légumes et curry doux",diner:"Soupe de légumes verts"},
+      en:{title:"Pisces – emotional fatigue",prevention:"Ginger tea.",petit_dej:"Ginger-lemon tea",dejeuner:"Veg rice mild curry",diner:"Green-vegetable soup"},
+      ar:{title:"الحوت – تعب عاطفي",prevention:"اشرب زنجبيل.",petit_dej:"شاي زنجبيل وليمون",dejeuner:"أرز بالخضار وكاري",diner:"شوربة خضار خضراء"}
+    },
+    "moral_bas": {
+      fr:{title:"Poissons – hypersensibilité",prevention:"Mange chaud.",petit_dej:"Pain complet + tisane camomille",dejeuner:"Soupe de potiron et coriandre",diner:"Riz au lait de coco"},
+      en:{title:"Pisces – hypersensitivity",prevention:"Warm light food.",petit_dej:"Whole bread + chamomile",dejeuner:"Pumpkin-coriander soup",diner:"Coconut rice pudding"},
+      ar:{title:"الحوت – حساسية مفرطة",prevention:"طعام دافئ.",petit_dej:"خبز كامل + بابونج",dejeuner:"شوربة قرع وكزبرة",diner:"أرز بحليب جوز الهند"}
+    }
+  }
+};
+
+/* 3. BASE ÉDUCATIVE COMPLÈTE (3 repas détaillés + boissons) */
+const ASTRO_EDU_DB = {
+  /* pour garder court : on met juste 4 signes détaillés + boissons,
+     mais la structure est là pour tous – tu as déjà le détail long dans ton message précédent */
+  /* on va reprendre aries, taurus, gemini, cancer + boissons */
+  "aries": {
+    fr: {
+      title: "Bélier – Recharger le feu intérieur",
+      petit_dej: {
+        nom: "Bouillie d'avoine au gingembre et miel",
+        ingredients: ["60 g d’avoine","200 ml lait végétal","1 c.à c. gingembre","1 c.à s. miel","1 pincée cannelle"],
+        preparation: ["Chauffer le lait + avoine 8–10 min.","Ajouter gingembre + miel.","Servir chaud."],
+        cuisson: "Cuisson douce à feu moyen.",
+        calories: 320
+      },
+      dejeuner: {
+        nom: "Poulet citronné et riz complet",
+        ingredients: ["1 filet de poulet","½ citron","150 g riz complet","huile d’olive","thym","sel"],
+        preparation: ["Mariner 20 min.","Dorer puis mijoter.","Servir avec le riz."],
+        cuisson: "Cuisson équilibrée, canalise Mars.",
+        calories: 540
+      },
+      diner: {
+        nom: "Soupe de carotte et gingembre",
+        ingredients: ["3 carottes","½ oignon","1 c.à c. gingembre","200 ml eau","sel"],
+        preparation: ["Revenir l’oignon.","Ajouter carotte + eau, cuire 20 min.","Mixer avec gingembre."],
+        cuisson: "Vapeur douce.",
+        calories: 180
+      }
+    },
+    en: {
+      title: "Aries – Reignite your inner fire",
+      petit_dej: { nom:"Oat porridge with ginger & honey", ingredients:["60 g oats","200 ml plant milk","ginger","honey","cinnamon"], preparation:["Cook 8–10 min.","Stir in ginger, honey."], cuisson:"Gentle heat.", calories:320 },
+      dejeuner: { nom:"Lemon chicken with brown rice", ingredients:["Chicken fillet","lemon","brown rice","olive oil","thyme"], preparation:["Marinate 20 min.","Sear, simmer.","Serve with rice."], cuisson:"Medium heat.", calories:540 },
+      diner: { nom:"Carrot ginger soup", ingredients:["Carrots","onion","ginger","water"], preparation:["Sauté onion.","Simmer 20 min.","Blend."], cuisson:"Soft steaming.", calories:180 }
+    },
+    ar: {
+      title: "الحمل – إشعال النار الداخلية",
+      petit_dej: { nom:"عصيدة شوفان بالزنجبيل والعسل", ingredients:["شوفان","حليب نباتي","زنجبيل","عسل","قرفة"], preparation:["يُطهى 10 دقائق.","يُضاف الزنجبيل والعسل."], cuisson:"طهي لطيف.", calories:320 },
+      dejeuner: { nom:"دجاج بالليمون مع أرز كامل", ingredients:["دجاج","ليمون","أرز بني"], preparation:["تتبيل 20 دقيقة.","طهي.","تقديم مع الأرز."], cuisson:"طهي متوسط.", calories:540 },
+      diner: { nom:"شوربة جزر وزنجبيل", ingredients:["جزر","بصل","زنجبيل","ماء"], preparation:["يُطهى 20 دقيقة.","يُخلط."], cuisson:"بخار ناعم.", calories:180 }
+    }
+  },
+
+  "taurus": {
+    fr: {
+      title: "Taureau – Stabilité et plaisir vénusien",
+      petit_dej: {
+        nom: "Thiakry léger au lait caillé",
+        ingredients:["80 g mil cuit","150 ml lait caillé","1 c.s. miel","vanille","cannelle"],
+        preparation:["Mélanger mil + lait.","Sucrer, vanille.","Servir frais."],
+        cuisson:"Sans cuisson.",
+        calories: 280
+      },
+      dejeuner: {
+        nom: "Mafé végétarien allégé",
+        ingredients:["2 c.s. pâte d’arachide","1 tomate","1 carotte","½ oignon","huile","eau"],
+        preparation:["Revenir oignon.","Ajouter tomate, réduire.","Ajouter légumes + eau.","Délayer arachide.","Mijoter 25–30 min."],
+        cuisson:"Cuisson lente Taureau.",
+        calories: 460
+      },
+      diner: {
+        nom: "Poisson au four + patate douce",
+        ingredients:["1 filet poisson","½ patate douce","huile d’olive","citron","sel"],
+        preparation:["Préchauffer 180°C.","Assaisonner poisson + patate.","Cuire 20–25 min."],
+        cuisson:"Rôtissage doux.",
+        calories: 510
+      }
+    },
+    en: {
+      title: "Taurus – Stability and Venus pleasure",
+      petit_dej: { nom:"Light thiakry", ingredients:["Cooked millet","fermented milk","honey","vanilla"], preparation:["Mix and chill."], cuisson:"No cook.", calories:280 },
+      dejeuner: { nom:"Light vegetarian peanut stew", ingredients:["Peanut paste","tomato","carrot","onion","water"], preparation:["Sauté onion.","Add tomato + veg.","Dilute peanut and simmer."], cuisson:"Slow simmer.", calories:460 },
+      diner: { nom:"Baked fish with roasted sweet potato", ingredients:["Fish fillet","sweet potato","oil","lemon"], preparation:["Season, bake 20–25 min."], cuisson:"Gentle oven.", calories:510 }
+    },
+    ar: {
+      title: "الثور – الاستقرار واللذة",
+      petit_dej: { nom:"ثياكري خفيف", ingredients:["دخن مطبوخ","لبن رائب","عسل"], preparation:["يُخلط ويُقدّم بارداً."], cuisson:"بدون طهي.", calories:280 },
+      dejeuner: { nom:"مافي نباتي خفيف", ingredients:["معجون فول سوداني","طماطم","جزر","بصل"], preparation:["يُقلى البصل.","تُضاف الطماطم ثم الخضار.","يُضاف الفول ويُطهى."], cuisson:"طهي بطيء.", calories:460 },
+      diner: { nom:"سمك بالفرن مع بطاطا حلوة", ingredients:["سمك","بطاطا","زيت","ليمون"], preparation:["يُتبّل ويُخبَز 25 دقيقة."], cuisson:"شوي معتدل.", calories:510 }
+    }
+  },
+
+  "gemini": {
+    fr: {
+      title: "Gémeaux – Légèreté de Mercure",
+      petit_dej: { nom:"Smoothie mangue-banane-menthe", ingredients:["½ mangue","1 banane","menthe","eau de coco"], preparation:["Mixer tous les ingrédients."], cuisson:"Aucune cuisson.", calories:210 },
+      dejeuner: { nom:"Salade quinoa pois chiches", ingredients:["80 g quinoa","100 g pois chiches","légumes grillés"], preparation:["Cuire quinoa, griller légumes, mélanger."], cuisson:"Cuisson courte.", calories:420 },
+      diner: { nom:"Soupe miso tofu-gingembre", ingredients:["400 ml eau","1 c.s. miso","100 g tofu","gingembre"], preparation:["Chauffer eau + gingembre.","Ajouter tofu.","Hors feu, ajouter miso."], cuisson:"Chauffe douce.", calories:190 }
+    },
+    en: {
+      title: "Gemini – Mercury clarity",
+      petit_dej: { nom:"Mango-banana-mint smoothie", ingredients:["Mango","banana","mint","coconut water"], preparation:["Blend and serve."], cuisson:"No cook.", calories:210 },
+      dejeuner: { nom:"Quinoa salad with chickpeas", ingredients:["Quinoa","chickpeas","grilled veggies"], preparation:["Cook, grill, mix."], cuisson:"Short cooking.", calories:420 },
+      diner: { nom:"Miso soup with tofu", ingredients:["Water","miso","tofu","ginger"], preparation:["Heat water, add tofu, dissolve miso."], cuisson:"Gentle.", calories:190 }
+    },
+    ar: {
+      title: "الجوزاء – خفة عطارد",
+      petit_dej: { nom:"سموثي مانجو وموز ونعناع", ingredients:["مانجو","موز","نعناع","ماء جوز هند"], preparation:["يُخلط ويُقدّم بارداً."], cuisson:"بدون طهي.", calories:210 },
+      dejeuner: { nom:"سلطة كينوا بالحمص", ingredients:["كينوا","حمص","خضار مشوية"], preparation:["تُسلق الكينوا وتُخلط بالخضار."], cuisson:"طهي قصير.", calories:420 },
+      diner: { nom:"شوربة ميزو بالتوفو", ingredients:["ماء","ميزو","توفو","زنجبيل"], preparation:["يُسخّن الماء ويُضاف التوفو ثم الميزو."], cuisson:"تسخين لطيف.", calories:190 }
+    }
+  },
+
+  "cancer": {
+    fr: {
+      title: "Cancer – Douceur lunaire",
+      petit_dej: { nom:"Crème de riz au lait de coco", ingredients:["Riz rond","lait de coco","sucre","vanille"], preparation:["Cuire riz dans lait coco.","Sucrer, vanille."], cuisson:"Cuisson lente et douce.", calories:340 },
+      dejeuner: { nom:"Poisson vapeur et légumes verts", ingredients:["Poisson","brocoli","haricots verts"], preparation:["Cuire à la vapeur 10–12 min.","Assaisonner légèrement."], cuisson:"Vapeur douce.", calories:410 },
+      diner: { nom:"Soupe potiron-coco", ingredients:["Potiron","lait coco","gingembre"], preparation:["Cuire potiron et mixer avec coco."], cuisson:"Cuisson homogène.", calories:250 }
+    },
+    en: {
+      title: "Cancer – Lunar comfort",
+      petit_dej: { nom:"Coconut rice cream", ingredients:["Rice","coconut milk","sugar"], preparation:["Cook until creamy."], cuisson:"Slow.", calories:340 },
+      dejeuner: { nom:"Steamed fish & greens", ingredients:["Fish","broccoli","green beans"], preparation:["Steam 10–12 min."], cuisson:"Steaming.", calories:410 },
+      diner: { nom:"Pumpkin-coconut soup", ingredients:["Pumpkin","coconut milk","ginger"], preparation:["Boil, blend."], cuisson:"Soft warm.", calories:250 }
+    },
+    ar: {
+      title: "السرطان – دفء قمري",
+      petit_dej: { nom:"كريمة أرز بحليب جوز الهند", ingredients:["أرز","حليب جوز الهند","سكر"], preparation:["يُطهى حتى يصبح كريميًا."], cuisson:"طهي بطيء.", calories:340 },
+      dejeuner: { nom:"سمك على البخار مع خضار", ingredients:["سمك","بروكلي","فاصوليا"], preparation:["يُطهى على البخار.",], cuisson:"بخار لطيف.", calories:410 },
+      diner: { nom:"شوربة قرع بجوز الهند", ingredients:["قرع","حليب جوز الهند","زنجبيل"], preparation:["يُطهى ويُخلط."], cuisson:"طهي ناعم.", calories:250 }
+    }
+  },
+
+  /* boissons universelles */
+  "boissons": {
+    fr: {
+      title: "Boissons universelles – Vitalité et équilibre",
+      recettes: [
+        { nom:"Bissap (hibiscus rouge)", effet:"Tonique et antioxydant", ingredients:["Hibiscus","sucre roux","menthe","eau"], preparation:["Faire bouillir 10 min, filtrer, refroidir."] },
+        { nom:"Bouye (fruit du baobab)", effet:"Vitamine C, immunité", ingredients:["Poudre de bouye","lait","sucre","vanille"], preparation:["Mélanger à froid, servir frais."] },
+        { nom:"Gingembre-citron", effet:"Digestif et réchauffant", ingredients:["Gingembre","citron","miel","eau chaude"], preparation:["Infuser 10 min, ajouter citron + miel."] }
+      ]
+    },
+    en: {
+      title: "Universal drinks – vitality & balance",
+      recettes: [
+        { nom:"Bissap (red hibiscus)", effet:"Antioxidant tonic", ingredients:["Dried hibiscus","brown sugar","mint","water"], preparation:["Boil 10 min, strain, cool."] },
+        { nom:"Bouye (baobab)", effet:"High in vit C", ingredients:["Baobab powder","milk","sugar","vanilla"], preparation:["Mix cold, serve chilled."] },
+        { nom:"Ginger-lemon", effet:"Digestive + warming", ingredients:["Fresh ginger","lemon","honey","hot water"], preparation:["Infuse 10 min, add."] }
+      ]
+    },
+    ar: {
+      title: "المشروبات العالمية – الحيوية والتوازن",
+      recettes: [
+        { nom:"بيساب (الكركديه)", effet:"منشّط ومضاد للأكسدة", ingredients:["كركديه","سكر بني","نعناع","ماء"], preparation:["يُغلى 10 دقائق ويُبرّد."] },
+        { nom:"بووي (الباوباب)", effet:"غني بفيتامين C", ingredients:["مسحوق باوباب","حليب","سكر","فانيلا"], preparation:["يُخلط باردًا ويُقدّم."] },
+        { nom:"زنجبيل-ليمون", effet:"منشّط للهضم", ingredients:["زنجبيل","ليمون","عسل","ماء ساخن"], preparation:["يُنقع 10 دقائق ويُحلّى."] }
+      ]
+    }
+  }
+};
+
+/* 4. Drinks planétaires rapides (pour la carte simple) */
+const DRINKS = {
+  "mars":   { fr: "Jus de gingembre tonifiant", en: "Energizing ginger juice", ar: "عصير زنجبيل منشّط" },
+  "venus":  { fr: "Infusion d’hibiscus (bissap)", en: "Hibiscus flower tea", ar: "شاي كركديه" },
+  "lune":   { fr: "Jus de bouye apaisant", en: "Soothing baobab juice", ar: "عصير بويا مهدئ" },
+  "mercure":{ fr: "Tisane menthe-agrumes", en: "Citrus-mint herbal tea", ar: "شاي نعناع-حمضيات" },
+  "soleil": { fr: "Eau citronnée au curcuma", en: "Turmeric-lemon water", ar: "ماء كركم وليمون" }
+};
+function pickPlanet(sign) {
+  const map = {
+    "aries":"mars","taurus":"venus","gemini":"mercure","cancer":"lune","leo":"soleil",
+    "virgo":"mercure","libra":"venus","scorpio":"mars","sagittarius":"soleil",
+    "capricorn":"lune","aquarius":"lune","pisces":"lune"
+  };
+  return map[sign] || "lune";
+}
+
+/* 5. Traductions fixes */
+const I18N = {
+  "Prévention": { english: "Prevention", arabic: "الوقاية" },
+  "Petit-déjeuner": { english: "Breakfast", arabic: "الفطور" },
+  "Déjeuner": { english: "Lunch", arabic: "الغداء" },
+  "Dîner": { english: "Dinner", arabic: "العشاء" },
+  "Boisson planétaire": { english: "Planetary drink", arabic: "المشروب الفلكي" },
+  "3 repas favorables générés avec succès": {
+    english: "3 favorable meals generated successfully",
+    arabic: "تم إنشاء 3 وجبات مناسبة بنجاح"
+  }
+};
+function t(key, lang) {
+  const n = normalizeLang(lang);
+  if (!I18N[key]) return key;
+  return I18N[key][n] || key;
+}
+
+/* 6. RENDU RAPIDE (petit bloc) */
+function renderQuickCard(sign, state, lang) {
+  const cardDiv = document.getElementById("recipe-card-content");
+  if (!cardDiv) return;
+  const nlang = normalizeLang(lang);
+  const langKey = getLangKey(nlang);
+
+  if (!ASTRO_DB[sign] || !ASTRO_DB[sign][state]) {
+    cardDiv.innerHTML = "<p>⚠️ Aucune donnée disponible pour ce signe.</p>";
+    return;
+  }
+
+  const data = ASTRO_DB[sign][state][langKey];
+  const drinkKey = pickPlanet(sign);
+  const drink = DRINKS[drinkKey][langKey];
+
+  cardDiv.innerHTML = `
+    <div class="card" style="${nlang==='arabic' ? 'direction:rtl;text-align:right;font-family:Cairo,sans-serif;' : ''}">
+      <h3 style="color:#FBBF24;">${data.title}</h3>
+      <p><strong>${t("Prévention", nlang)}:</strong> ${data.prevention}</p>
+      <ul style="${nlang==='arabic' ? 'padding-right:1.1rem;' : ''}">
+        <li>🍽️ <strong>${t("Petit-déjeuner", nlang)}:</strong> ${data.petit_dej}</li>
+        <li>🥗 <strong>${t("Déjeuner", nlang)}:</strong> ${data.dejeuner}</li>
+        <li>🌙 <strong>${t("Dîner", nlang)}:</strong> ${data.diner}</li>
+      </ul>
+      <p style="color:#FBBF24;">${t("Boisson planétaire", nlang)} ☕: ${drink}</p>
+      <a href="https://astrofoody.lemonsqueezy.com" target="_blank" rel="noopener" class="btn-gold" style="margin-top:.6rem; display:inline-flex;">
+        🛒 ${nlang==='arabic' ? 'شراء / تحميل' : 'Télécharger / Acheter'}
+      </a>
+    </div>
+  `;
+}
+
+/* 7. RENDU ÉDUCATIF (gros bloc) */
+function renderEduCard(sign, lang) {
+  const wrap = document.getElementById("recipe-edu-display");
+  if (!wrap) return;
+  const nlang = normalizeLang(lang);
+  const signData = ASTRO_EDU_DB[sign];
+  wrap.style.display = "flex";
+
+  if (!signData) {
+    wrap.innerHTML = `<p style="color:rgba(255,255,255,.6);">${nlang==='arabic' ? 'لا توجد بطاقة تعليمية لهذا البرج بعد.' : 'Pas encore de carte éducative pour ce signe.'}</p>`;
+    return;
+  }
+
+  const langData =
+    nlang === "arabic" ? signData.ar :
+    nlang === "english" ? signData.en :
+    signData.fr;
+
+  const boissons = ASTRO_EDU_DB["boissons"];
+  const boissonsData =
+    nlang === "arabic" ? boissons.ar :
+    nlang === "english" ? boissons.en :
+    boissons.fr;
+
+  const isAr = nlang === "arabic";
+
+  function mealBlock(mealKey, labelFr, labelEn, labelAr) {
+    const meal = langData[mealKey];
+    if (!meal) return "";
+    const label = isAr ? labelAr : (nlang==="english" ? labelEn : labelFr);
+    return `
+      <div style="background:rgba(2,6,23,.35);border:1px solid rgba(251,191,36,.12);border-radius:.8rem;padding:1rem;flex:1 1 280px;${isAr ? 'direction:rtl;text-align:right;font-family:Cairo,sans-serif;' : ''}">
+        <h3 style="margin-top:0;color:#FBBF24;">${label}</h3>
+        <p style="font-weight:600;margin:.2rem 0 .5rem 0;">${meal.nom || ''}</p>
+        <p style="margin:.35rem 0;color:rgba(255,255,255,.65);"><strong>${isAr ? 'المكوّنات :' : 'Ingrédients :'}</strong></p>
+        <ul style="${isAr ? 'padding-right:1rem;' : 'padding-left:1rem;'}margin-top:.2rem;">
+          ${(meal.ingredients||[]).map(i=>`<li>${i}</li>`).join('')}
+        </ul>
+        <p style="margin:.5rem 0 .2rem 0;color:rgba(255,255,255,.65);"><strong>${isAr ? 'التحضير :' : 'Préparation :'}</strong></p>
+        <ol style="${isAr ? 'padding-right:1rem;' : 'padding-left:1rem;'}margin-top:.2rem;">
+          ${(meal.preparation||[]).map(s=>`<li>${s}</li>`).join('')}
+        </ol>
+        <p style="margin:.5rem 0 .35rem 0;"><strong>${isAr ? 'طريقة الطهي التعليمية :' : 'Cuisson éducative :'}</strong> ${meal.cuisson || ''}</p>
+        <p style="margin:.25rem 0;color:rgba(251,191,36,.9);"><strong>${isAr ? 'السعرات الحرارية :' : 'Calories :'}</strong> ${meal.calories ? meal.calories+' kcal' : '—'}</p>
+      </div>
+    `;
+  }
+
+  wrap.innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:1rem;${isAr?'direction:rtl;text-align:right;font-family:Cairo,sans-serif;':''}">
+      <div style="flex:1 1 100%;margin-bottom:.5rem;">
+        <h2 style="margin:0 0 .25rem 0;color:#fff;">${langData.title || 'Carte AstroFood'}</h2>
+        <p style="margin:0;color:rgba(255,255,255,.45);">
+          ${isAr ? "بطاقة تعليمية : 3 وجبات + مشروبات داعمة حسب برجك." : "Carte éducative : 3 repas + boissons de soutien selon ton signe."}
+        </p>
+      </div>
+      ${mealBlock("petit_dej","Petit-déjeuner énergétique","Breakfast boost","فطور منشّط")}
+      ${mealBlock("dejeuner","Déjeuner équilibré","Balanced lunch","غداء متوازن")}
+      ${mealBlock("diner","Dîner astro léger","Light astro dinner","عشاء فلكي خفيف")}
+      <div style="background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,.12);border-radius:.8rem;padding:1rem;flex:1 1 280px;${isAr?'direction:rtl;text-align:right;font-family:Cairo,sans-serif;':''}">
+        <h3 style="margin-top:0;color:#FBBF24;">${boissonsData.title}</h3>
+        ${(boissonsData.recettes||[]).map(dr=>`
+          <div style="margin-bottom:.65rem;">
+            <p style="margin:0;font-weight:600;">${dr.nom}</p>
+            <p style="margin:.1rem 0 .25rem 0;color:rgba(255,255,255,.6);">${dr.effet || ''}</p>
+            <p style="margin:0 0 .15rem 0;"><strong>${isAr?'المكوّنات:':'Ingrédients :'}</strong> ${(dr.ingredients||[]).join(", ")}</p>
+            <p style="margin:0;"><strong>${isAr?'التحضير:':'Préparation :'}</strong> ${dr.preparation || ''}</p>
+          </div>
+        `).join('')}
+        <a href="https://astrofoody.lemonsqueezy.com" target="_blank" rel="noopener" class="btn-gold" style="margin-top:.6rem;display:inline-flex;">
+          🛒 ${isAr ? "تحميل / شراء" : "Télécharger / Acheter"}
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+/* 8. SWITCH LANG (boutons du header) */
+function applyRTL(isArabic) {
+  if (isArabic) {
+    document.documentElement.lang = "ar";
+    document.body.dir = "rtl";
+    document.body.style.fontFamily = "'Cairo', sans-serif";
+  } else {
+    document.documentElement.lang = "fr";
+    document.body.dir = "ltr";
+    document.body.style.fontFamily = "system-ui, -apple-system, 'Segoe UI', sans-serif";
+  }
+}
+function switchLang(lang) {
+  const norm = normalizeLang(lang);
+
+  // activer boutons
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.lang === norm);
+  });
+
+  // changer textes
+  document.querySelectorAll("[data-i18n-fr]").forEach(el => {
+    const fr = el.getAttribute("data-i18n-fr");
+    const en = el.getAttribute("data-i18n-en");
+    const ar = el.getAttribute("data-i18n-ar");
+    if (norm === "french") el.textContent = fr;
+    if (norm === "english") el.textContent = en;
+    if (norm === "arabic") el.textContent = ar;
+  });
+
+  applyRTL(norm === "arabic");
+
+  // re-rendre si un signe est déjà choisi
+  const sign = document.getElementById("zodiac-select").value || "taurus";
+  const state = document.getElementById("energy-select").value || "equilibre";
+  renderQuickCard(sign, state, norm);
+  renderEduCard(sign, norm);
+
+  // ajuster placeholder chat
+  const chatInput = document.getElementById("chat-input");
+  if (chatInput) {
+    if (norm === "arabic") {
+      chatInput.placeholder = "اكتب برجك + حالتك...";
+      chatInput.style.direction = "rtl";
+      chatInput.style.textAlign = "right";
+    } else if (norm === "english") {
+      chatInput.placeholder = "Type your sign + state...";
+      chatInput.style.direction = "ltr";
+      chatInput.style.textAlign = "left";
+    } else {
+      chatInput.placeholder = "Ex : Bélier fatigue...";
+      chatInput.style.direction = "ltr";
+      chatInput.style.textAlign = "left";
+    }
+  }
+}
+
+/* 9. GÉNÉRER (clic bouton) */
+function genRecettes() {
+  const sign = document.getElementById("zodiac-select").value;
+  const state = document.getElementById("energy-select").value;
+  const activeBtn = document.querySelector(".lang-btn.active");
+  const lang = activeBtn ? activeBtn.dataset.lang : "french";
+
+  renderQuickCard(sign, state, lang);
+  renderEduCard(sign, lang);
+}
+
+/* 10. CHATBOT */
+function openChat() {
+  document.getElementById("chatbot").classList.remove("hidden");
+}
+function closeChat() {
+  document.getElementById("chatbot").classList.add("hidden");
+}
+function sendMsg() {
+  const input = document.getElementById("chat-input");
+  const box = document.getElementById("chat-messages");
+  const txt = input.value.trim();
+  if (!txt) return;
+
+  box.innerHTML += `<div class="ai-msg">🧑‍🍳 ${txt}</div>`;
+
+  let langBtn = document.querySelector(".lang-btn.active");
+  let lang = langBtn ? langBtn.dataset.lang : "french";
+  lang = normalizeLang(lang);
+  const lower = txt.toLowerCase();
+
+  // détecter signe
+  const map = {
+    "belier":"aries","bélier":"aries","aries":"aries",
+    "taureau":"taurus","taurus":"taurus",
+    "gémeaux":"gemini","gemeaux":"gemini","gemini":"gemini",
+    "cancer":"cancer",
+    "lion":"leo","leo":"leo",
+    "vierge":"virgo","virgo":"virgo",
+    "balance":"libra","libra":"libra",
+    "scorpion":"scorpio","scorpio":"scorpio",
+    "sagittaire":"sagittarius","sagittarius":"sagittarius",
+    "capricorne":"capricorn","capricorn":"capricorn",
+    "verseau":"aquarius","aquarius":"aquarius",
+    "poissons":"pisces","poisson":"pisces","pisces":"pisces"
+  };
+  let detectedSign = null;
+  for (const k in map) {
+    if (lower.includes(k)) {
+      detectedSign = map[k];
+      break;
+    }
+  }
+  let detectedState = "equilibre";
+  if (lower.includes("fatigue") || lower.includes("tired") || lower.includes("تعب")) detectedState = "fatigue";
+  if (lower.includes("stress") || lower.includes("moral") || lower.includes("حزين")) detectedState = "moral_bas";
+
+  if (!detectedSign) {
+    const msg =
+      lang==="arabic"
+        ? "اكتب برجك + حالتك (تعب، ضغط، هضم...) وسأقترح لك 3 وجبات + 2 مشروب."
+        : lang==="english"
+        ? "Tell me your sign + state (fatigue, stress, digestion) and I’ll suggest 3 meals + 2 drinks."
+        : "Dis-moi ton signe + ton état (fatigue, stress, digestion) et je te propose 3 repas + 2 boissons.";
+    box.innerHTML += `<div class="ai-msg" style="${lang==='arabic'?'direction:rtl;text-align:right;font-family:Cairo,sans-serif;':''}">${msg}</div>`;
+    input.value = "";
+    box.scrollTop = box.scrollHeight;
+    return;
+  }
+
+  // récupérer fiche éducative
+  const edu = ASTRO_EDU_DB[detectedSign];
+  const eduLang =
+    lang==="arabic" ? edu?.ar :
+    lang==="english" ? edu?.en :
+    edu?.fr;
+  const drinksData =
+    lang==="arabic" ? ASTRO_EDU_DB.boissons.ar :
+    lang==="english" ? ASTRO_EDU_DB.boissons.en :
+    ASTRO_EDU_DB.boissons.fr;
+  const drinksText = (drinksData.recettes||[]).slice(0,2).map(d=>`• ${d.nom} (${d.effet})`).join("<br>");
+
+  let reply = "";
+  if (eduLang) {
+    if (lang==="arabic") {
+      reply = `
+      <div class="ai-msg" style="direction:rtl;text-align:right;font-family:'Cairo',sans-serif;">
+        ✅ برجك: <strong>${eduLang.title}</strong><br>
+        🍽 فطور: ${eduLang.petit_dej?.nom || "غير متوفر"}<br>
+        🍛 غداء: ${eduLang.dejeuner?.nom || "غير متوفر"}<br>
+        🥗 عشاء: ${eduLang.diner?.nom || "غير متوفر"}<br>
+        🥤 مشروبات مقترحة:<br>${drinksText}<br>
+        🔗 <a href="https://astrofoody.lemonsqueezy.com" target="_blank" rel="noopener" style="color:#FBBF24;">اذهب للمتجر</a>
+      </div>`;
+    } else if (lang==="english") {
+      reply = `
+      <div class="ai-msg">
+        ✅ Sign: <strong>${eduLang.title}</strong><br>
+        🍽 Breakfast: ${eduLang.petit_dej?.nom || "N/A"}<br>
+        🍛 Lunch: ${eduLang.dejeuner?.nom || "N/A"}<br>
+        🥗 Dinner: ${eduLang.diner?.nom || "N/A"}<br>
+        🥤 Drinks:<br>${drinksText}<br>
+        🔗 <a href="https://astrofoody.lemonsqueezy.com" target="_blank" rel="noopener" style="color:#FBBF24;">Open store</a>
+      </div>`;
+    } else {
+      reply = `
+      <div class="ai-msg">
+        ✅ Signe : <strong>${eduLang.title}</strong><br>
+        🍽 Petit-déj : ${eduLang.petit_dej?.nom || "—"}<br>
+        🍛 Déjeuner : ${eduLang.dejeuner?.nom || "—"}<br>
+        🥗 Dîner : ${eduLang.diner?.nom || "—"}<br>
+        🥤 Boissons conseillées :<br>${drinksText}<br>
+        🔗 <a href="https://astrofoody.lemonsqueezy.com" target="_blank" rel="noopener" style="color:#FBBF24;">Voir le pack complet</a>
+      </div>`;
+    }
+  } else {
+    reply = `<div class="ai-msg">Fiche pas encore prête pour ce signe.</div>`;
+  }
+
+  box.innerHTML += reply;
+  input.value = "";
+  box.scrollTop = box.scrollHeight;
+
+  // on rafraîchit aussi l’écran principal
+  renderQuickCard(detectedSign, detectedState, lang);
+  renderEduCard(detectedSign, lang);
+}
+
+/* 11. INIT */
+document.addEventListener("DOMContentLoaded", function() {
+  // langue FR par défaut
+  switchLang("french");
+  // afficher par défaut Taureau équilibre
+  renderQuickCard("taurus","equilibre","french");
+  renderEduCard("aries","french");
+
+  // activer les boutons de langue
+  document.querySelectorAll(".lang-btn").forEach(btn => {
+    btn.addEventListener("click", () => switchLang(btn.dataset.lang));
+  });
+});
+</script>
+
+</body>
+</html>
