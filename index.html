@@ -413,7 +413,7 @@ function getLangKey(l) {
 /* === 2. Base rapide 12 signes x 9 états ======================= */
 /* issue du fichier fourni, complétée */
 /* (TRONQUÉ DANS LE FICHIER -> on reconstruit même structure) */
-export const CONST_ETATS = {
+export const ASRO_STATE = {
   detox: {
     label: { fr: "Détox", en: "Detox", ar: "إزالة السموم" },
     prevention: {
@@ -642,7 +642,7 @@ export const CONST_ETATS = {
 };
   
   /* === 3.  CONST_SIGNE_ETATS – les 12 signes et leurs états associés(extraits) ============================= */
- export const CONST_SIGNE_ETATS = [
+ export const ASTRO_SIGNE_STATE = [
   { sign: "Bélier", planet_state: "Mars affaibli", states: ["detox", "energy_booster"] },
   { sign: "Taureau", planet_state: "Vénus ralentie", states: ["energy_booster", "stress_relief"] },
   { sign: "Gémeaux", planet_state: "Mercure dispersé", states: ["metabolic_balance", "immune_support"] },
@@ -889,7 +889,7 @@ const I18N = {
 /* === 8. Rendu carte simple ==================================== */
 function renderRecipeCard(sign, state, lang) {
   const langKey = getLangKey(lang);
-  const slot = ASTRO_DB[sign] && ASTRO_DB[sign][state] ? ASTRO_DB[sign][state][langKey] : null;
+  const slot = ASTRO_SIGN_STATE[sign] && ASTRO_SIGN_STATE[sign][state] ? ASTRO_SIGN_STATE[sign][state][langKey] : null;
   const card = document.getElementById("recipe-card-content");
   if (!slot) {
     card.innerHTML = "<p>❌ Données manquantes pour ce signe/état.</p>";
@@ -938,14 +938,14 @@ function renderRecipeCard(sign, state, lang) {
 /* === 9. Rendu carte éducative ================================= */
 function renderEduCard(sign, lang) {
   const langKey = getLangKey(lang);
-  const edu = ASTRO_EDU_DB[sign] ? ASTRO_EDU_DB[sign][langKey] : null;
+  const edu = ASTRO_EDU_SIGN_STATE[sign] ? ASTRO_EDU_SIGN_STATE[sign][langKey] : null;
   const div = document.getElementById("recipe-edu-display");
   if (!edu) {
     div.style.display = "none";
     div.innerHTML = "";
     return;
   }
-  const drinksEdu = ASTRO_EDU_DB["boissons"] ? ASTRO_EDU_DB["boissons"][langKey] : null;
+  const drinksEdu = ASTRO_EDU_SIGN_STATE["boissons"] ? ASTRO_EDU_SIGN_STATE["boissons"][langKey] : null;
 
   div.style.display = "block";
   div.innerHTML = `
@@ -1079,7 +1079,7 @@ function sendMsg() {
   const { sign, state } = parseChatInput(msg);
   const lang = CURRENT_LANG;
   const langKey = getLangKey(lang);
-  const slot = ASTRO_DB[sign] && ASTRO_DB[sign][state] ? ASTRO_DB[sign][state][langKey] : null;
+  const slot = ASTRO_SIGN_STATE[sign] && ASTRO_SIGN_STATE[sign][state] ? ASTRO_SIGN_STATE[sign][state][langKey] : null;
   const planet = pickPlanet(sign);
   const planetDrink = DRINKS_PLANETAIRES[planet] ? DRINKS_PLANETAIRES[planet][langKey] : "";
   const extraDrinks = getDrinks(state, langKey, 2);
@@ -1145,3 +1145,4 @@ window.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
